@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>For My Jaan ❤️ | I Am Truly Sorry</title>
+    <!-- Romantic Handwriting + Clean UI Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <!-- Confetti Explosion Library -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #ffe5ec 0%, #ffc2d1 50%, #ffb3c6 100%);
+            font-family: 'Nunito', sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow-x: hidden;
+            position: relative;
+            padding: 20px 15px;
+        }
+
+        /* Floating background hearts, kisses & emojis */
+        .hearts-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .floating-heart {
+            position: absolute;
+            bottom: -50px;
+            font-size: 24px;
+            animation: floatUp 12s linear infinite;
+        }
+
+        @keyframes floatUp {
+            0% {
+                transform: translateY(0) rotate(0deg) scale(0.8);
+                opacity: 0;
+            }
+            15% {
+                opacity: 0.85;
+            }
+            85% {
+                opacity: 0.85;
+            }
+            100% {
+                transform: translateY(-110vh) rotate(360deg) scale(1.2);
+                opacity: 0;
+            }
+        }
+
+        /* Floating Music Toggle Button */
+        .music-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 999;
+            background: rgba(255, 255, 255, 0.9);
+            border: 2px solid #ff4d6d;
+            border-radius: 50%;
+            width: 46px;
+            height: 46px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(255, 77, 109, 0.35);
+            transition: all 0.3s ease;
+        }
+
+        .music-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .music-btn.playing {
+            animation: pulseGlow 1.8s infinite;
+        }
+
+        @keyframes pulseGlow {
+            0% { box-shadow: 0 0 0 0 rgba(255, 77, 109, 0.5); }
+            70% { box-shadow: 0 0 0 12px rgba(255, 77, 109, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(255, 77, 109, 0); }
+        }
+
+        /* Card Container */
+        .card {
+            position: relative;
+            z-index: 10;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 30px;
+            padding: 32px 24px;
+            width: 100%;
+            max-width: 470px;
+            box-shadow: 0 20px 45px rgba(224, 49, 87, 0.22), 0 5px 15px rgba(0, 0, 0, 0.04);
+            text-align: center;
+            border: 2px solid rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+        }
+
+        /* Slide Items */
+        .slide {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            animation: fadeInSlide 0.45s cubic-bezier(0.25, 0.9, 0.25, 1) forwards;
+        }
+
+        .slide.active {
+            display: flex;
+        }
+
+        @keyframes fadeInSlide {
+            from {
+                opacity: 0;
+                transform: translateY(14px) scale(0.97);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        /* Rounded GIF Border Container */
+        .gif-wrapper {
+            width: 190px;
+            height: 190px;
+            border-radius: 24px;
+            overflow: hidden;
+            margin-bottom: 18px;
+            box-shadow: 0 8px 22px rgba(255, 77, 109, 0.2);
+            border: 3px solid #ffccd5;
+            background: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .gif-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .tagline {
+            font-family: 'Caveat', cursive;
+            font-size: 2.2rem;
+            color: #c9184a;
+            margin-bottom: 10px;
+            line-height: 1.25;
+        }
+
+        .message-text {
+            font-size: 1.02rem;
+            color: #495057;
+            line-height: 1.6;
+            margin-bottom: 22px;
+            font-weight: 600;
+        }
+
+        .step-indicator {
+            font-size: 0.8rem;
+            color: #ff4d6d;
+            font-weight: 800;
+            margin-bottom: 8px;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+        }
+
+        /* Action Buttons */
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            width: 100%;
+            margin-top: 5px;
+            position: relative;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #ff4d6d, #ff758f);
+            color: #ffffff;
+            border: none;
+            padding: 11px 24px;
+            font-size: 0.98rem;
+            font-weight: 700;
+            border-radius: 99px;
+            cursor: pointer;
+            box-shadow: 0 6px 18px rgba(255, 77, 109, 0.35);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            font-family: 'Nunito', sans-serif;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 22px rgba(255, 77, 109, 0.5);
+        }
+
+        .btn-secondary {
+            background: #f1f3f5;
+            color: #495057;
+            box-shadow: none;
+        }
+
+        .btn-secondary:hover {
+            background: #e9ecef;
+            box-shadow: none;
+        }
+
+        /* Runaway No Button */
+        #btn-no {
+            background: #ff6b81;
+            position: relative;
+            transition: all 0.15s ease-out;
+        }
+
+        /* Progress Dots */
+        .dots-container {
+            display: flex;
+            justify-content: center;
+            gap: 5px;
+            margin-top: 22px;
+        }
+
+        .dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: #ffccd5;
+            transition: all 0.3s ease;
+        }
+
+        .dot.active {
+            width: 20px;
+            border-radius: 99px;
+            background: #ff4d6d;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Floating Background Particles (Hearts, Kisses, Flowers) -->
+    <div class="hearts-bg" id="heartsBg"></div>
+
+    <!-- Music Toggle Button -->
+    <button class="music-btn" id="musicToggle" onclick="toggleMusic()" title="Play / Pause Music">
+        🔇
+    </button>
+
+    <!-- Hidden Background Audio (Romantic instrumental) -->
+    <audio id="bgMusic" loop preload="auto">
+        <source src="music.mp3" type="audio/mp3">
+    </audio>
+
+    <div class="card">
+        
+        <!-- Slide 1: Peeking Shyly -->
+        <div class="slide active" id="slide1">
+            <span class="step-indicator">Slide 1 / 12</span>
+            <div class="gif-wrapper">
+                <img src="https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExdW5kODJvM3Y5YTNma2Q4ejZreHh6NDR4bmxibW15bDV3Y2Fqc3J0MSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/ICOgUNjpvO0PC/giphy.gif" 
+                     onerror="this.src='https://images.unsplash.com/photo-1534361960057-19889db9621e?w=400&auto=format&fit=crop&q=80'" alt="Peeking shy">
+            </div>
+            <h2 class="tagline">Suno na... Aji sunti ho?</h2>
+            <p class="message-text">
+                Mujhe pata hai tum bohot naraz ho mujhse aur tumhara gussa hona bilkul banta hai... 
+                Par please do minute ke liye gussa side karke meri baat sunogi? 🥺
+            </p>
+            <div class="btn-group">
+                <button class="btn" onclick="nextSlide(2)">Bolo, sun rahi hoon &gt;&gt;</button>
+            </div>
+        </div>
+
+        <!-- Slide 2: Realizing Mistake -->
+        <div class="slide" id="slide2">
+            <span class="step-indicator">Slide 2 / 12</span>
+            <div class="gif-wrapper">
+                <img src="https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExNHR4M2N1cXk5eXo4a2JkaXl5b2RhNG95bTRyN2ZzMGdycHNjc2p6bSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/9Y5BbDSkSTiY8/giphy.gif" 
+                     onerror="this.src='https://images.unsplash.com/photo-1543852786-1cf6624b9987?w=400&auto=format&fit=crop&q=80'" alt="Sad cat">
+            </div>
+            <h2 class="tagline">Malik galti ho gayi...</h2>
+            <p class="message-text">
+                Sach me, galti poori meri hi thi. Maine hurt kiya bhot baar ... 
+                Main koi excuse nahi de raha, mujhe tumse nhi jeetna ,  mujhe dil se bohot bura aur guilty feel ho raha hai.
+            </p>
+            <div class="btn-group">
+                <button class="btn btn-secondary" onclick="prevSlide(1)">&lt; Back</button>
+                <button class="btn" onclick="nextSlide(3)">Next &gt;&gt;</button>
+            </div>
+        </div>
+
+        <!-- Slide 3: Fear of Loss -->
+        <div class="slide" id="slide3">
+            <span class="step-indicator">Slide 3 / 12</span>
+            <div class="gif-wrapper">
+                <img src="https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExZ3hzamx2MXU5eGRwZ3AwdWhmaTF2OG1pdzZtdTVscjh4bzVjcXZ0NiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/ISOckXUybVfQ4/giphy.gif" 
+                     onerror="this.src='https://images.unsplash.com/photo-1518791841217-8f162f1e1131?w=400&auto=format&fit=crop&q=80'" alt="Sad anxious">
+            </div>
+            <h2 class="tagline">Koi tough decision mat lena...</h2>
+            <p class="message-text">
+                Gusse  me aake door jaane ka faisla mat lena please... 
+                Sach kahu toh mujhe bohot darr lagta hai tumhe khone se. Tumhare bina meri poori duniya adhoori hai.
+            </p>
+            <div class="btn-group">
+                <button class="btn btn-secondary" onclick="prevSlide(2)">&lt; Back</button>
+                <button class="btn" onclick="nextSlide(4)">Aage suno &gt;&gt;</button>
+            </div>
+        </div>
+
+        <!-- Slide 4: Rose Offering + Nazar Lag Gayi -->
+        <div class="slide" id="slide4">
+            <span class="step-indicator">Slide 4 / 12</span>
+            <div class="gif-wrapper">
+                <img src="https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExbm91NmprOGwzOWs2OWY5NGx3eXU3cXc1ODkyMW9hNm96YjZjc2F3NiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/c76IJLufpNwSULPk77/giphy.gif" 
+                     onerror="this.src='https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=400&auto=format&fit=crop&q=80'" alt="Holding rose flower">
+            </div>
+            <h2 class="tagline">Gussa thoda kam kar lo na Baby please ... 🌹</h2>
+            <p class="message-text">
+                Gussa thoda kam kar lo, main ab aage se koi galtiyan nahi karunga. 
+                Kabhi mauka nahi dunga naraz hone ka... Sach me lagta hai hum dono ko kisi ki nazar lag gayi hai. 🧿
+            </p>
+            <div class="btn-group">
+                <button class="btn btn-secondary" onclick="prevSlide(3)">&lt; Back</button>
+                <button class="btn" onclick="nextSlide(5)">Ye lo phool &gt;&gt;</button>
+            </div>
+        </div>
+
+        <!-- Slide 5: Kisses & Puchhiyan -->
+        <div class="slide" id="slide5">
+            <span class="step-indicator">Slide 5 / 12</span>
+            <div class="gif-wrapper">
+                <img src="https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExd2Rkc2M1eTZob2tzb25sNHpvcm4wa24xMnp4NnY5cGdzbHBsNXNvaSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/G3va31oEEnIkM/giphy.gif" 
+                     onerror="this.src='https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?w=400&auto=format&fit=crop&q=80'" alt="Cute flying kisses">
+            </div>
+            <h2 class="tagline">Bohooot Saari Kisses & Puchhi 💋</h2>
+            <p class="message-text">
+                Ye lo dher saari  kisses tumhare pyare se forehead aur cheeks pe... 😘 
+                Jab tak tumhara gussa pighal nahi jaata, tab tak puchhiyan milti rahengi!
+            </p>
+            <div class="btn-group">
+                <button class="btn btn-secondary" onclick="prevSlide(4)">&lt; Back</button>
+                <button class="btn" onclick="nextSlide(6)">Aur kisses &gt;&gt;</button>
+            </div>
+        </div>
+
+        <!-- Slide 6: You Are Mine -->
+        <div class="slide" id="slide6">
+            <span class="step-indicator">Slide 6 / 12</span>
+            <div class="gif-wrapper">
+                <img src="https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExM3g1dzRlaHhzNXB1MXgyZnJ3Z3VqOGl3a2k3Y3BqN2k4NmZkaXU4ciZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/l4pTdcifPZLpDjL1e/giphy.gif" 
+                     onerror="this.src='https://images.unsplash.com/photo-1518199266791-5375a83190b7?w=400&auto=format&fit=crop&q=80'" alt="Warm hug">
+            </div>
+            <h2 class="tagline">You are mine, only mine! 🔒❤️</h2>
+            <p class="message-text">
+                Chahe kitni bhi ladai ho jaye, main tumhe hamesha apna bana ke rakhunga. 
+                Tum sirf meri ho aur main tumhe kabhi kisi aur ka nahi hone dunga... Samjhi na?
+            </p>
+            <div class="btn-group">
+                <button class="btn btn-secondary" onclick="prevSlide(5)">&lt; Back</button>
+                <button class="btn" onclick="nextSlide(7)">Next &gt;&gt;</button>
+            </div>
+        </div>
+
+        <!-- Slide 7: I Love You -->
+        <div class="slide" id="slide7">
+            <span class="step-indicator">Slide 7 / 12</span>
+            <div class="gif-wrapper">
+                <img src="https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExcGdtOHd2NDg4ZDVmMG1ub2d0NnE5ZnplOGprdnV4aXF1Mm01MnhlcyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/M90mJvfWfd5mbUuULX/giphy.gif" 
+                     onerror="this.src='https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=400&auto=format&fit=crop&q=80'" alt="Blushing heart">
+            </div>
+            <h2 class="tagline">I Love You So Much ❤️</h2>
+            <p class="message-text">
+                I love you to the moon and back... Words me express nahi kar sakta ki tum mere liye kya ho. 
+                Tum meri smile ho, mera sukoon ho aur meri sabse pyari aadat ho jo hamesha rahogi .
+            </p>
+            <div class="btn-group">
+                <button class="btn btn-secondary" onclick="prevSlide(6)">&lt; Back</button>
+                <button class="btn" onclick="nextSlide(8)">Aur suno &gt;&gt;</button>
+            </div>
+        </div>
+
+        <!-- Slide 8: Food Treat -->
+        <div class="slide" id="slide8">
+            <span class="step-indicator">Slide 8 / 12</span>
+            <div class="gif-wrapper">
+                <img src="https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExbnEwdWpybXBocXZ6cWpucmU1bXB2eHN6NmE4a2NscXZvNjQzNG85cCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/3o7TKoWXm3okO1kgHC/giphy.gif" 
+                     onerror="this.src='https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=400&auto=format&fit=crop&q=80'" alt="Food treat">
+            </div>
+            <h2 class="tagline">Fast Food pakka  🍦🍕</h2>
+            <p class="message-text">
+                Gussa thanda karne ke liye tumhari favorite , ice cream aur momos treat meri taraf se done! 
+                Bas please apna chehra sad mat banao na...
+            </p>
+            <div class="btn-group">
+                <button class="btn btn-secondary" onclick="prevSlide(7)">&lt; Back</button>
+                <button class="btn" onclick="nextSlide(9)">Achha suno &gt;&gt;</button>
+            </div>
+        </div>
+
+        <!-- Slide 9: Special Bond -->
+        <div class="slide" id="slide9">
+            <span class="step-indicator">Slide 9 / 12</span>
+            <div class="gif-wrapper">
+                <img src="https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExOHQxMXBqejA5cGRvM21vNG9xdnNva3p1bjg4eTZ0eHNpMjl2d3pkMyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/du3J3cXyzhj75IOgvA/giphy.gif" 
+                     onerror="this.src='https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?w=400&auto=format&fit=crop&q=80'" alt="Sweet cuddle">
+            </div>
+            <h2 class="tagline">Humara bond special hai...</h2>
+            <p class="message-text">
+                Humne kitne pyare moments share kiye hain... Ek-Do  argument ki wajah se 
+                apna itna pyara connection kharab mat hone do na. We are a team, forever , we are family
+            </p>
+            <div class="btn-group">
+                <button class="btn btn-secondary" onclick="prevSlide(8)">&lt; Back</button>
+                <button class="btn" onclick="nextSlide(10)">Next &gt;&gt;</button>
+            </div>
+        </div>
+
+        <!-- Slide 10: Holding Ears Sorry -->
+        <div class="slide" id="slide10">
+            <span class="step-indicator">Slide 10 / 12</span>
+            <div class="gif-wrapper">
+                <img src="https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExbDVqbmI4aXpxMzY5ODNzOHZtdjFxdjBicWh0eXZ5cnQ2bThmdG4zMSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/OPU6wzx8JrHna/giphy.gif" 
+                     onerror="this.src='https://images.unsplash.com/photo-1543852786-1cf6624b9987?w=400&auto=format&fit=crop&q=80'" alt="Pleading puppy eyes">
+            </div>
+            <h2 class="tagline">Kaan pakad ke sorry! 🙏</h2>
+            <p class="message-text">
+                Dono kaan pakad ke, 100 baar sit-ups lagane ko tayyar hoon! 
+                Bas ek baar bol do ki tumne maaf kar diya aur ab bilkul naraz nahi ho...
+            </p>
+            <div class="btn-group">
+                <button class="btn btn-secondary" onclick="prevSlide(9)">&lt; Back</button>
+                <button class="btn" onclick="nextSlide(11)">Bas ek baat &gt;&gt;</button>
+            </div>
+        </div>
+
+        <!-- Slide 11: Cute Smile -->
+        <div class="slide" id="slide11">
+            <span class="step-indicator">Slide 11 / 12</span>
+            <div class="gif-wrapper">
+                <img src="https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExaG93OG13OTMwdXNuYnpsZ2gxdGN0anJwbXFpcXB0eHpscnR5ZzY5dCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/MDJ9IbxxvDUQM/giphy.gif" 
+                     onerror="this.src='https://images.unsplash.com/photo-1534361960057-19889db9621e?w=400&auto=format&fit=crop&q=80'" alt="Cute cat face">
+            </div>
+            <h2 class="tagline">Itna gussa aap par achha nahi lagta... ✨</h2>
+            <p class="message-text">
+                Sach me, jab tum hasti ho na toh sab kuch kitna beautiful lagta hai. 
+                Chalo ab bohot ho gayi narazgi, ek pyari si smile de do na meri jaan?
+            </p>
+            <div class="btn-group">
+                <button class="btn btn-secondary" onclick="prevSlide(10)">&lt; Back</button>
+                <button class="btn" onclick="nextSlide(12)">Final Question ❤️</button>
+            </div>
+        </div>
+
+        <!-- Slide 12 (Interactive Ending) -->
+        <div class="slide" id="slide12">
+            <span class="step-indicator">Slide 12 / 12</span>
+            <div class="gif-wrapper" id="finalGifWrapper">
+                <img id="finalGif" src="https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExdW5kODJvM3Y5YTNma2Q4ejZreHh6NDR4bmxibW15bDV3Y2Fqc3J0MSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/ICOgUNjpvO0PC/giphy.gif" alt="Hopeful kitty">
+            </div>
+            <h2 class="tagline" id="finalHeading">Maaf kar diya na meri jaan? 🥺</h2>
+            <p class="message-text" id="finalText">
+                Pakka promise, ab sab theek rahega. Kya hum wapas pehle jaise normal baat kar sakte hain?
+            </p>
+            <div class="btn-group" id="actionButtons">
+                <button class="btn" id="btn-yes" onclick="celebrateForgiveness()">Yes, Maaf kiya ❤️</button>
+                <button class="btn btn-secondary" id="btn-no" onmouseover="dodgeButton()" onclick="dodgeButton()">Nahi 😤</button>
+            </div>
+        </div>
+
+        <!-- Progress Dots Indicator -->
+        <div class="dots-container" id="dotsContainer">
+            <div class="dot active"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+        </div>
+
+    </div>
+
+    <script>
+        // Floating Heart & Kiss Background Particles
+        const bgContainer = document.getElementById('heartsBg');
+        const heartIcons = ['❤️', '💋', '😘', '🌸', '✨', '💕', '🌷', '🧿', '💖'];
+
+        for (let i = 0; i < 24; i++) {
+            const heart = document.createElement('div');
+            heart.classList.add('floating-heart');
+            heart.innerText = heartIcons[Math.floor(Math.random() * heartIcons.length)];
+            heart.style.left = Math.random() * 100 + 'vw';
+            heart.style.animationDuration = (8 + Math.random() * 8) + 's';
+            heart.style.animationDelay = (Math.random() * 10) + 's';
+            heart.style.fontSize = (16 + Math.random() * 20) + 'px';
+            bgContainer.appendChild(heart);
+        }
+
+        // Music Control Logic
+        const bgMusic = document.getElementById('bgMusic');
+        const musicToggle = document.getElementById('musicToggle');
+        let isMusicPlaying = false;
+
+        function startMusic() {
+            if (!isMusicPlaying) {
+                bgMusic.volume = 0.5; // Soft background volume
+                bgMusic.play().then(() => {
+                    isMusicPlaying = true;
+                    musicToggle.innerText = '🎵';
+                    musicToggle.classList.add('playing');
+                }).catch(err => {
+                    console.log("Audio autoplay waiting for user interaction:", err);
+                });
+            }
+        }
+
+        function toggleMusic() {
+            if (isMusicPlaying) {
+                bgMusic.pause();
+                isMusicPlaying = false;
+                musicToggle.innerText = '🔇';
+                musicToggle.classList.remove('playing');
+            } else {
+                bgMusic.play();
+                isMusicPlaying = true;
+                musicToggle.innerText = '🎵';
+                musicToggle.classList.add('playing');
+            }
+        }
+
+        // Navigation Management
+        let currentSlideIndex = 1;
+        const totalSlides = 12;
+
+        function updateDots(index) {
+            const dots = document.querySelectorAll('.dot');
+            dots.forEach((dot, idx) => {
+                dot.classList.toggle('active', idx === (index - 1));
+            });
+        }
+
+        function showSlide(slideIndex) {
+            document.querySelectorAll('.slide').forEach(slide => {
+                slide.classList.remove('active');
+            });
+            const target = document.getElementById(`slide${slideIndex}`);
+            if (target) {
+                target.classList.add('active');
+                currentSlideIndex = slideIndex;
+                updateDots(slideIndex);
+            }
+        }
+
+        function nextSlide(index) {
+            startMusic(); // Plays music seamlessly on click
+            showSlide(index);
+        }
+
+        function prevSlide(index) {
+            startMusic();
+            showSlide(index);
+        }
+
+        // Runaway / Dodge logic for "No" Button
+        function dodgeButton() {
+            const btnNo = document.getElementById('btn-no');
+            const card = document.querySelector('.card');
+            
+            const cardRect = card.getBoundingClientRect();
+            const btnRect = btnNo.getBoundingClientRect();
+
+            const maxOffsetX = (cardRect.width / 2) - btnRect.width;
+            const maxOffsetY = 70;
+
+            const randomX = (Math.random() * (maxOffsetX * 2)) - maxOffsetX;
+            const randomY = (Math.random() * (maxOffsetY * 2)) - maxOffsetY;
+
+            btnNo.style.transform = `translate(${randomX}px, ${randomY}px)`;
+        }
+
+        // Celebration Confetti Explosion
+        function celebrateForgiveness() {
+            startMusic();
+            const end = Date.now() + (3.5 * 1000);
+            const colors = ['#ff4d6d', '#ff758f', '#ffccd5', '#ffffff', '#ffd166', '#c9184a'];
+
+            (function frame() {
+                confetti({
+                    particleCount: 5,
+                    angle: 60,
+                    spread: 60,
+                    origin: { x: 0 },
+                    colors: colors
+                });
+                confetti({
+                    particleCount: 5,
+                    angle: 120,
+                    spread: 60,
+                    origin: { x: 1 },
+                    colors: colors
+                });
+
+                if (Date.now() < end) {
+                    requestAnimationFrame(frame);
+                }
+            }());
+
+            // Transform final card into love & celebration state
+            document.getElementById('finalGif').src = "https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExdW5kODJvM3Y5YTNma2Q4ejZreHh6NDR4bmxibW15bDV3Y2Fqc3J0MSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/ICOgUNjpvO0PC/giphy.gif";
+            document.getElementById('finalHeading').innerText = "Thank You Meri Jaan! ❤️💋";
+            document.getElementById('finalText').innerHTML = "I Love You so so much! You are forever mine.<br>Ab jaldi se smile karo aur WhatsApp pe text karo! 💌😘✨";
+            document.getElementById('actionButtons').innerHTML = `<button class="btn" onclick="location.reload()">Start Over 🔄</button>`;
+        }
+    </script>
+</body>
+</html>
